@@ -5,7 +5,11 @@ that search term from google images and displays it.
 I wrapped up the "get random image" function into a nice, encapsulated function, randomGoogleImage,
 so it's easy to reuse.  
 
+//This code is based on Jeff Thompson's Google Image Search URL code, with some fixes for the
+//html parsing.  
+//Check out the original here:  https://github.com/jeffThompson/ProcessingTeachingSketches/tree/master/AdvancedTopics/GetGoogleImageSearchURLs
 
+This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
 *************************************************************************************/
 
 
@@ -52,7 +56,6 @@ PImage img=null;
   outputTerm = searchTerm.replaceAll(" ", "_");
   searchTerm = searchTerm.replaceAll(" ", "%20");
 
-
   // run search as many times as specified
   println("Retreiving image links (" + fileSize + ")...\n");
   for (int search=0; search<numSearches; search++) {
@@ -60,8 +63,6 @@ PImage img=null;
     // let us know where we're at in the process
     print("  " + ((search+1)*20) + " / " + (numSearches*20) + ":");
 
-    // get Google image search HTML source code; mostly built from PhyloWidget example:
-    // http://code.google.com/p/phylowidget/source/browse/trunk/PhyloWidget/src/org/phylowidget/render/images/ImageSearcher.java
     print(" downloading...");
     try {
       URL query = new URL("http://images.google.com/images?gbv=1&start=" + offset + "&q=" + searchTerm + "&tbs=isz:lt,islt:" + fileSize);
@@ -90,7 +91,6 @@ PImage img=null;
     // extract image URLs only, starting with 'imgurl'
     println(" parsing...");
     if (source != null) {
-      // built partially from: http://www.mkyong.com/regular-expressions/how-to-validate-image-file-extension-with-regular-expression
       String[][] m = matchAll(source, "<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>");    // (?i) means case-insensitive
       if (m != null) {                                                                          // did we find a match?
         for (int i=0; i<m.length; i++) {                                                        // iterate all results of the match
@@ -100,9 +100,7 @@ PImage img=null;
       else
         println("no match");
     }
-
-    // ** here we get the 2nd item from each match - this is our 'group' containing just the file URL and extension
-
+    
     // update offset by 20 (limit imposed by Google)
     offset += 20;
   }
@@ -117,8 +115,6 @@ PImage img=null;
         println("    error downloading image, skipping...\n");    // likely a NullPointerException
       }
 
-      // looking for something fancier? try: 
-      // http://www.avajava.com/tutorials/lessons/how-do-i-save-an-image-from-a-url-to-a-file.html
     return img;
 }
 
